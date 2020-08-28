@@ -1,19 +1,39 @@
-# O/1 Knapsack Problem #
+# 0/1 Knapsack Problem #
 
-bag_limit = 7
-val = [2,2,4,5,3]
-weight = [3,1,3,4,2]
+def knapsack(bag_limit, val, weight):
 
-knapsack = [[0 for x in range(bag_limit+1)] for x in range(len(val)+1)]
+    knapsack = [[0 for x in range(bag_limit+1)] for x in range(len(val)+1)]
 
-for row in range(len(val) + 1):
-    for col in range(bag_limit + 1):
-        if row == 0 or col == 0:
-            knapsack[row][col] = 0
-        elif weight[row-1] <= col: # has to be row-1 because of first row thats all zeros, else you'd get out of range
-            knapsack[row][col] = max(knapsack[row-1][col], val[row-1] + knapsack[row-1][col-weight[row-1]])
+    for row in range(len(val) + 1):
+        for col in range(bag_limit + 1):
+            if row == 0 or col == 0:
+                knapsack[row][col] = 0
+            elif weight[row-1] <= col:
+                knapsack[row][col] = max(knapsack[row-1][col], val[row-1] + knapsack[row-1][col-weight[row-1]])
+            else:
+                knapsack[row][col] = knapsack[row-1][col]
+
+
+    total = bag_limit
+    row = len(val)
+    col = bag_limit
+    loop = 1
+    items = []
+
+    while bag_limit > 0:
+        if knapsack[row][col] != knapsack[row-1][col]:
+            items.append(str(row))
+            row -=1
+            col = col - weight[row]
+            bag_limit -= weight[row]
         else:
-            knapsack[row][col] = knapsack[row-1][col]
+            row-=1
+
+    print('You should place items ' + ', '.join(items) + ' in your knapsack for the highest value under ' + str(bag_limit) + ' lbs.' )
+
+    return knapsack
+
+knapsack(bag_limit = 7, val = [2,2,4,5,3], weight = [3,1,3,4,2])
 
 
 # Set-Cover Problem #
