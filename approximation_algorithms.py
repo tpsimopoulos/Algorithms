@@ -13,23 +13,22 @@ def knapsack(bag_limit, val, weight):
             else:
                 knapsack[row][col] = knapsack[row-1][col]
 
-
     total = bag_limit
     row = len(val)
     col = bag_limit
     loop = 1
     items = []
 
-    while bag_limit > 0:
+    while total > 0:
         if knapsack[row][col] != knapsack[row-1][col]:
             items.append(str(row))
             row -=1
             col = col - weight[row]
-            bag_limit -= weight[row]
+            total -= weight[row]
         else:
             row-=1
 
-    print('You should place items ' + ', '.join(items) + ' in your knapsack for the highest value under ' + str(bag_limit) + ' lbs.' )
+    print(f"You should place items {', '.join(items)} in your knapsack for the highest value under {bag_limit} lbs.")
 
     return knapsack
 
@@ -60,3 +59,38 @@ while states_needed:
             states_covered = covered
     states_needed -= states_covered
     final_stations.add(best_station)
+
+
+# Longest common subsequence #
+
+def lcs(str1, str2):
+
+    ''' This implementation doesn't stop repeated values. '''
+
+    dp_table = [[0 for x in range(len(str1) + 1)] for x in range(len(str2) + 1)]
+
+    for row in range(len(str2) + 1):
+        for col in range(len(str1) + 1):
+            if row == 0 or col == 0:
+                dp_table[row][col] = 0
+            elif str2[row-1] == str1[col-1]:
+                dp_table[row][col] = 1 + dp_table[row-1][col-1]
+            else:
+                dp_table[row][col] = max(dp_table[row-1][col], dp_table[row][col-1])
+
+    row = len(str2)
+    col = len(str1)
+    chars = []
+    while row > 0:
+        if dp_table[row][col] == dp_table[row-1][col]:
+            row -= 1
+        elif dp_table[row][col] == dp_table[row][col-1]:
+            col -= 1
+        else:
+            chars.append(str1[row-1])
+            row -= 1
+            col -= 1
+
+    print(f"Characters {', '.join(chars)} are part of the longest common subsequence.")
+
+    return dp_table
